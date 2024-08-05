@@ -2,6 +2,7 @@ export 'dart:math';
 export 'dart:async';
 export 'package:flutter/widgets.dart';
 export 'package:flutter/material.dart';
+export 'package:clock_app/utils/routes/model.dart';
 export 'package:clock_app/utils/routes/routes.dart';
 export 'package:clock_app/utils/components/strap.dart';
 export 'package:clock_app/utils/components/stopclock.dart';

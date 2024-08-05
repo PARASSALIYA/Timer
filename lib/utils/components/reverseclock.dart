@@ -10,109 +10,159 @@ class ReverseClock extends StatefulWidget {
 class _ReverseClockState extends State<ReverseClock> {
   DateTime dateTime = DateTime.now();
 
-  int hour = 23;
-  int minute = 59;
-  int second = 59;
+  int minute = 00;
+  int second = 00;
   bool stop = false;
 
-  void _timer() {
-    stop = true;
-    Future.delayed(
-      const Duration(seconds: 1),
-      () {
+  void timer() {
+    Future.delayed(const Duration(seconds: 1), () {
+      if (!stop) {
         setState(() {
-          if (second == 0) {
-            second = 59;
-            minute--;
-          }
-          if (minute == 0) {
-            minute = 59;
+          if (second > 0) {
             second--;
-          }
-          if (hour == 0) {
-            hour = 23;
           } else {
-            second--;
+            if (minute > 0) {
+              minute--;
+              second = 59;
+            }
           }
         });
-        if (stop) {
-          _timer();
-        }
-      },
-    );
+      }
+      timer();
+    });
   }
 
   @override
   void initState() {
+    timer();
     super.initState();
-    _timer();
   }
 
   @override
   Widget build(BuildContext context) {
+    Size s = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
-        alignment: Alignment.center,
         children: [
-          // Image
           imageSelect(),
-          // Time
           Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: 250,
-              ),
               Text(
-                " ${hour.toString().padLeft(2, '0')} : ${minute.toString().padLeft(2, '0')} : ${second.toString().padLeft(2, '0')}",
+                "${minute.toString().padLeft(2, '0')} : ${second.toString().padLeft(2, '0')}",
                 style: const TextStyle(
-                  fontSize: 40,
+                  fontSize: 45,
+                  fontWeight: FontWeight.bold,
                   color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                  fontStyle: FontStyle.italic,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black,
-                      offset: Offset(5, 5),
-                      blurRadius: 5,
-                    ),
-                  ],
                 ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  //Minute
+                  Container(
+                    height: s.height * 0.08,
+                    width: s.width * 0.3,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.4),
+                      borderRadius: BorderRadius.circular(
+                        20,
+                      ),
+                    ),
+                    child: ListWheelScrollView(
+                      itemExtent: 30,
+                      useMagnifier: true,
+                      magnification: 1.2,
+                      diameterRatio: 0.5,
+                      onSelectedItemChanged: (index) {
+                        setState(() {
+                          minute = index;
+                        });
+                      },
+                      children: List.generate(
+                        60,
+                        (index) => Text(
+                          "$index",
+                          style: const TextStyle(
+                            fontSize: 25,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  //Second
+                  Container(
+                    height: s.height * 0.08,
+                    width: s.width * 0.3,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.4),
+                      borderRadius: BorderRadius.circular(
+                        20,
+                      ),
+                    ),
+                    child: ListWheelScrollView(
+                      itemExtent: 30,
+                      useMagnifier: true,
+                      magnification: 1.2,
+                      diameterRatio: 0.5,
+                      onSelectedItemChanged: (index) {
+                        setState(() {
+                          second = index;
+                        });
+                      },
+                      children: List.generate(
+                        60,
+                        (index) => Text(
+                          "$index",
+                          style: const TextStyle(
+                            fontSize: 25,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(
                 height: 20,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
                     onPressed: () {
                       stop = false;
+                      timer();
                       setState(() {});
                     },
                     style: elevatedButton(),
-                    child: Text(
-                      "Stop",
-                      style: elevatedButton()
-                          .textStyle!
-                          .resolve(<MaterialState>{}),
+                    child: const Text(
+                      "Start",
+                      style: TextStyle(
+                        fontSize: 28,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 10,
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      setState(() {
-                        _timer();
-                      });
+                      stop = true;
+                      setState(() {});
                     },
                     style: elevatedButton(),
-                    child: Text(
-                      "Start",
-                      style: elevatedButton()
-                          .textStyle!
-                          .resolve(<MaterialState>{}),
+                    child: const Text(
+                      "Stop",
+                      style: TextStyle(
+                        fontSize: 28,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],

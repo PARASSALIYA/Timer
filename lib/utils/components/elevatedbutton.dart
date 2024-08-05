@@ -14,8 +14,8 @@ ButtonStyle elevatedButton() {
     fixedSize: const WidgetStatePropertyAll(
       Size.fromWidth(100),
     ),
-    textStyle: WidgetStatePropertyAll(
-      const TextStyle(
+    textStyle: const WidgetStatePropertyAll(
+      TextStyle(
         color: Colors.white,
         fontSize: 20,
       ),
